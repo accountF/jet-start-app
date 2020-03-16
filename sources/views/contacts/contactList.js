@@ -18,9 +18,9 @@ export default class ContactList extends JetView {
 
 	init(view, url) {
 		this.listComponents = this.$$("contactList");
+		this.listComponents.attachEvent("onAfterSelect", id => this.setIdIntoUrl(id));
 		dataContacts.waitData.then(() => {
 			this.listComponents.sync(dataContacts);
-			this.listComponents.attachEvent("onAfterSelect", id => this.setIdIntoUrl(id));
 
 			const idFromUrl = url[0].params.id;
 			if (dataContacts.getItem(idFromUrl)) {

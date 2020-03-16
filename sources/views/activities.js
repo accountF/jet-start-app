@@ -99,6 +99,8 @@ export default class Activities extends JetView {
 			this.windowAdd = this.ui(formForAddActivity);
 			this.windowEdit = this.ui(formForEditActivity);
 		});
+		this.windowAdd = this.ui(formForAddActivity);
+		this.windowEdit = this.ui(formForEditActivity);
 	}
 
 	deleteActivity(id) {

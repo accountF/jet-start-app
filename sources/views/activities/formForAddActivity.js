@@ -69,44 +69,48 @@ export default class formForAddActivity extends JetView {
 		};
 	}
 
+	ready() {
+		this.formComponent = this.$$("form");
+	}
+
 	showWindow() {
 		this.getRoot().show();
 		const id = ItemData.getId();
 		if (id) {
 			const item = ItemData.getItem();
 			item.Time = item.DueDate;
-			this.$$("form").setValues(item);
+			this.formComponent.setValues(item);
 		}
 	}
 
 	closeWindow() {
-		this.$$("form").clear();
+		this.formComponent.clear();
 		ItemData.setId(null);
 		this.getRoot().hide();
 		this.show("./activities");
 	}
 
+	setTimeIntoDate(date, time) {
+		const hours = time.getHours();
+		const minutes = time.getMinutes();
+		date.setHours(hours);
+		date.setMinutes(minutes);
+	}
+
 	addOrUpdateActivity() {
-		if (!this.$$("form").validate()) {
+		if (!this.formComponent.validate()) {
 			webix.message("Please check fields");
 		}
 		else {
-			const dataFromForm = this.$$("form").getValues();
-			const date = dataFromForm.DueDate;
+			const dataFromForm = this.formComponent.getValues();
+			let date = dataFromForm.DueDate;
 			const time = dataFromForm.Time;
 			if (date && time) {
-				const hours = time.getHours();
-				const minutes = time.getMinutes();
-				date.setHours(hours);
-				date.setMinutes(minutes);
+				this.setTimeIntoDate(date, time);
 			}
 			else if (time) {
 				const currentDate = new Date();
-				const hours = time.getHours();
-				const minutes = time.getMinutes();
-				currentDate.setHours(hours);
-				currentDate.setMinutes(minutes);
-				dataFromForm.DueDate = currentDate;
+				this.setTimeIntoDate(currentDate, time);
 			}
 			const id = ItemData.getId();
 			if (id) {
@@ -118,7 +122,7 @@ export default class formForAddActivity extends JetView {
 				dataActivities.add(dataFromForm, 0);
 				webix.message("Activity was added");
 			}
-			this.$$("form").clear();
+			this.formComponent.clear();
 			this.getRoot().hide();
 		}
 	}
