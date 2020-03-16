@@ -96,8 +96,6 @@ export default class Activities extends JetView {
 			dataActivityType.waitData
 		]).then(() => {
 			this.tableComponent.sync(dataActivities);
-			this.windowAdd = this.ui(formForAddActivity);
-			this.windowEdit = this.ui(formForEditActivity);
 		});
 		this.windowAdd = this.ui(formForAddActivity);
 		this.windowEdit = this.ui(formForEditActivity);
