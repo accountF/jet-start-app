@@ -1,5 +1,6 @@
 import {JetView} from "webix-jet";
 import {dataContacts} from "../../models/contacts";
+import avatar from "../../data/avatar.png";
 
 export default class ContactList extends JetView {
 	config() {
@@ -9,34 +10,42 @@ export default class ContactList extends JetView {
 			select: true,
 			width: 250,
 			autoheight: false,
-			template: "<div class='container-for-image'><img class='user-avatar' src=#Photo# /> </div><div class='user-info'><p> #value# </p><p><small> #Company# </small></p></div>",
+			template: contact => `
+				<div class='container-for-image'>
+					<img class='user-avatar' src=${contact.Photo || avatar} />
+				</div>
+				<div class='user-info'>
+					<p> ${contact.value} </p>
+					<p><small> ${contact.Company} </small></p>
+				</div>`,
 			type: {
 				height: "auto"
 			}
 		};
 	}
 
-	init(view, url) {
+	init() {
 		this.listComponents = this.$$("contactList");
-		this.listComponents.attachEvent("onAfterSelect", id => this.setIdIntoUrl(id));
+		this.listComponents.sync(dataContacts);
+		this.listComponents.attachEvent("onAfterSelect", (id) => {
+			this.app.callEvent("changeUrl", [id]);
+		});
 		dataContacts.waitData.then(() => {
-			this.listComponents.sync(dataContacts);
-
-			const idFromUrl = url[0].params.id;
+			const idFromUrl = this.getParam("id");
+			const firstContact = this.listComponents.getFirstId();
 			if (dataContacts.getItem(idFromUrl)) {
 				this.listComponents.select(idFromUrl);
 			}
 			else if (!idFromUrl && dataContacts.count()) {
-				this.listComponents.select(this.listComponents.getFirstId());
+				this.listComponents.select(firstContact);
+			}
+			else if (idFromUrl && dataContacts.count() && !dataContacts.getItem(idFromUrl)) {
+				webix.message("Please check data");
+				this.listComponents.select(firstContact);
 			}
 			else {
-				this.show("./contacts");
-				webix.message("Please choose the contact");
+				webix.message("Please check data");
 			}
 		});
-	}
-
-	setIdIntoUrl(id) {
-		this.show(`./contacts?id=${id}`);
 	}
 }
