@@ -10,7 +10,10 @@ export default class formForAddActivity extends JetView {
 			view: "window",
 			localId: "windowWithForm",
 			position: "center",
-			head: "Add Activity",
+			head: {
+				template: "#nameForm# activity",
+				localId: "header"
+			},
 			width: 500,
 			body: {
 				view: "form",
@@ -47,15 +50,32 @@ export default class formForAddActivity extends JetView {
 					},
 					{
 						cols: [
-							{view: "datepicker", label: "Date", name: "DueDate", format: webix.i18n.longDateFormatStr},
-							{view: "datepicker", label: "Time", name: "Time", type: "time", format: webix.i18n.timeFormat}
+							{
+								view: "datepicker",
+								label: "Date",
+								name: "DueDate",
+								format: webix.i18n.longDateFormatStr
+							},
+							{
+								view: "datepicker",
+								label: "Time",
+								name: "Time",
+								type: "time",
+								format: webix.i18n.timeFormat
+							}
 						]
 					},
-					{view: "checkbox", label: "Completed", name: "State", checkValue: "Close", uncheckValue: "Open"},
+					{
+						view: "checkbox",
+						label: "Completed",
+						name: "State",
+						checkValue: "Close",
+						uncheckValue: "Open"
+					},
 					{
 						cols: [
 							{},
-							{view: "button", value: "Add", click: () => this.addOrUpdateActivity()},
+							{view: "button", localId: "btnAdd", click: () => this.addOrUpdateActivity()},
 							{view: "button", value: "Cancel", click: () => this.closeWindow()}
 						]
 					}
@@ -71,11 +91,16 @@ export default class formForAddActivity extends JetView {
 
 	ready() {
 		this.formComponent = this.$$("form");
+		this.window = this.$$("windowWithForm");
 	}
 
 	showWindow() {
 		this.getRoot().show();
 		const id = ItemData.getId();
+		const nameForm = id ? "Edit" : "Add";
+		const nameButton = id ? "Save" : "Add";
+		this.$$("header").setValues({nameForm});
+		this.$$("btnAdd").setValue(nameButton);
 		if (id) {
 			const item = ItemData.getItem();
 			item.Time = item.DueDate;
@@ -85,9 +110,9 @@ export default class formForAddActivity extends JetView {
 
 	closeWindow() {
 		this.formComponent.clear();
+		this.formComponent.clearValidation();
 		ItemData.setId(null);
 		this.getRoot().hide();
-		this.show("./activities");
 	}
 
 	setTimeIntoDate(date, time) {
@@ -117,13 +142,14 @@ export default class formForAddActivity extends JetView {
 				dataActivities.updateItem(dataFromForm.id, dataFromForm);
 				webix.message("Activity was updated");
 				ItemData.setId(null);
-			}
-			else {
+			} else {
 				dataActivities.add(dataFromForm, 0);
 				webix.message("Activity was added");
 			}
 			this.formComponent.clear();
+			this.formComponent.clearValidation();
 			this.getRoot().hide();
 		}
 	}
 }
+

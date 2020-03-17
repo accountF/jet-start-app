@@ -15,16 +15,30 @@
     vertical-align: middle;
 }
 
+.details-avatar img {
+    width: 150px;
+}
+
+.details{
+    display: flex;
+}
+
+.details-info {
+    width: 200px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.details-avatar p {
+    text-align: center;
+}
+
 .alignment {
     margin-top: 7px;
 }
 
-.webix_layout_line.placeForButtonAddActivity {
+.webix_layout_line.placeForButton {
     background-color: ghostwhite;
-}
-
-.userAvatar img {
-    width: 100px;
 }
 
 .user-avatar {

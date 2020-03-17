@@ -5,7 +5,7 @@ export default class TopView extends JetView {
 		const header = {
 			type: "header",
 			localId: "nameOfPage",
-			template: "#name#",
+			template: "#nameOfActiveWindow#",
 			css: "webix_header app_header"
 		};
 
@@ -53,15 +53,13 @@ export default class TopView extends JetView {
 
 	init() {
 		this.use(plugins.Menu, "top:menu");
-	}
-
-	urlChange(view, url) {
 		this.nameOfPageComponent = this.$$("nameOfPage");
-		const nameOfPageFromUrl = url[1].page;
-		const nameOfPageForHeader = `${nameOfPageFromUrl[0].toUpperCase()}${nameOfPageFromUrl.slice(1)}`;
-		const names = {
-			name: nameOfPageForHeader
-		};
-		this.nameOfPageComponent.parse(names);
+		this.menuComponent = this.$$("top:menu");
+		this.menuComponent.attachEvent("onAfterSelect", (id) => {
+			if (id) {
+				let nameOfActiveWindow = this.menuComponent.getItem(id).value;
+				this.nameOfPageComponent.setValues({nameOfActiveWindow});
+			}
+		});
 	}
 }

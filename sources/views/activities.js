@@ -2,8 +2,7 @@ import {JetView} from "webix-jet";
 import {dataActivities} from "../models/activities";
 import {dataContacts} from "../models/contacts";
 import {dataActivityType} from "../models/activityType";
-import formForAddActivity from "./activities/formForAddActivity";
-import formForEditActivity from "./activities/formForEditActivity";
+import formActivity from "./activities/formForAddActivity";
 import ItemData from "../data/itemData";
 
 export default class Activities extends JetView {
@@ -12,7 +11,7 @@ export default class Activities extends JetView {
 			view: "button",
 			width: 150,
 			value: "<span class='webix_icon mdi mdi-plus-box'></span> Add Activity",
-			click: () => this.windowAdd.showWindow()
+			click: () => this.window.showWindow()
 		};
 		const table = {
 			view: "datatable",
@@ -75,7 +74,7 @@ export default class Activities extends JetView {
 		const ui = {
 			rows: [
 				{
-					css: "placeForButtonAddActivity",
+					css: "placeForButton",
 					cols: [
 						{},
 						button
@@ -89,16 +88,8 @@ export default class Activities extends JetView {
 
 	init() {
 		this.tableComponent = this.$$("activitiesTable");
-		this.show("../activities");
-		webix.promise.all([
-			dataContacts.waitData,
-			dataActivities.waitData,
-			dataActivityType.waitData
-		]).then(() => {
-			this.tableComponent.sync(dataActivities);
-		});
-		this.windowAdd = this.ui(formForAddActivity);
-		this.windowEdit = this.ui(formForEditActivity);
+		this.tableComponent.sync(dataActivities);
+		this.window = this.ui(formActivity);
 	}
 
 	deleteActivity(id) {
@@ -112,6 +103,6 @@ export default class Activities extends JetView {
 		const item = dataActivities.getItem(id.row);
 		ItemData.setItem(item);
 		ItemData.setId(id.row);
-		this.windowEdit.showWindow();
+		this.window.showWindow();
 	}
 }
