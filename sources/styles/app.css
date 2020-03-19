@@ -16,7 +16,7 @@
 }
 
 .details-avatar img {
-    width: 150px;
+    width: 100px;
 }
 
 .details{
@@ -56,4 +56,12 @@
 
 .container-for-image {
     display: inline-block;
+}
+
+.templateImagePreview .webix_template{
+    padding: 0;
+}
+
+.imagePreview{
+    width: 150px;
 }

@@ -1,4 +1,4 @@
-class ItemData {
+class ItemDataContact {
 	constructor() {
 		this.id = null;
 		this.item = null;
@@ -23,4 +23,4 @@ class ItemData {
 	}
 }
 
-export default new ItemData();
+export default new ItemDataContact();
