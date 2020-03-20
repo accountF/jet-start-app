@@ -1,7 +1,7 @@
 import {JetView} from "webix-jet";
 import {dataStatuses} from "../../models/statuses";
 import {dataContacts} from "../../models/contacts";
-import ItemDataContact from "../../data/itemDataContact";
+import {ItemDataContact} from "../../data/itemData";
 import avatar from "../../data/avatar.png";
 
 export default class FormContact extends JetView {
@@ -148,7 +148,6 @@ export default class FormContact extends JetView {
 
 	init() {
 		this.formComponent = this.$$("formForContactData");
-
 		this.image = this.$$("templateImage");
 		const reader = new FileReader();
 		this.$$("imageUploader").attachEvent("onBeforeFileAdd", (upload) => {
@@ -168,17 +167,14 @@ export default class FormContact extends JetView {
 		}
 	}
 
-	closeForm(id) {
+	closeForm() {
 		this.formComponent.clear();
 		this.formComponent.clearValidation();
-		ItemDataContact.setId(null);
-		if (id) {
-			this.show(`/top/contacts?id=${id}/contacts.contactDescription`);
-		}
-		else {
+		if (!ItemDataContact.getId()) {
 			const idFirstItem = dataContacts.getFirstId();
-			this.show(`/top/contacts?id=${idFirstItem}/contacts.contactDescription`);
+			ItemDataContact.setId(idFirstItem);
 		}
+		this.show("/top/contacts/contacts.contactDescription");
 	}
 
 	addNewContactOrUpdate() {
@@ -196,7 +192,8 @@ export default class FormContact extends JetView {
 					webix.message("Contact was added");
 				}
 			}).then((res) => {
-				this.closeForm(res.id);
+				ItemDataContact.setId(res.id);
+				this.closeForm();
 			});
 		}
 		else {

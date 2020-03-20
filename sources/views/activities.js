@@ -3,7 +3,7 @@ import {dataActivities} from "../models/activities";
 import {dataContacts} from "../models/contacts";
 import {dataActivityType} from "../models/activityType";
 import formActivity from "./activities/formActivity";
-import ItemDataActivity from "../data/itemDataActivity";
+import {ItemDataActivity} from "../data/itemData";
 
 export default class Activities extends JetView {
 	config() {

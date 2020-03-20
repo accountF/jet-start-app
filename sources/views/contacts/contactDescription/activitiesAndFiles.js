@@ -3,7 +3,7 @@ import {contactFiles} from "../../../models/contactFiles";
 import {dataActivityType} from "../../../models/activityType";
 import {dataActivities} from "../../../models/activities";
 import formActivity from "../../activities/formActivity";
-import ItemDataActivity from "../../../data/itemDataActivity";
+import {ItemDataContact, ItemDataActivity} from "../../../data/itemData";
 import {dataContacts} from "../../../models/contacts";
 
 export default class ActivitiesAndFiles extends JetView {
@@ -160,9 +160,9 @@ export default class ActivitiesAndFiles extends JetView {
 		this.window = this.ui(formActivity);
 		this.$$("tab").attachEvent("onChange", id => this.$$(id).show());
 		this.$$("upload").attachEvent("onBeforeFileAdd", (file) => {
-			const idFromUrlToNumber = +this.getParam("id", true);
+			const idToNumber = +ItemDataContact.getId();
 			const dataFile = {
-				ContactID: idFromUrlToNumber,
+				ContactID: idToNumber,
 				name: file.name,
 				date: file.file.lastModifiedDate,
 				size: file.sizetext
@@ -176,11 +176,11 @@ export default class ActivitiesAndFiles extends JetView {
 			dataActivities.waitData,
 			contactFiles.waitData
 		]).then(() => {
-			const idFromUrlToNumber = +this.getParam("id", true);
-			if (idFromUrlToNumber && dataContacts.getItem(idFromUrlToNumber)) {
-				contactFiles.data.filter(data => data.ContactID === idFromUrlToNumber);
+			const idToNumber = +ItemDataContact.getId();
+			if (idToNumber && dataContacts.getItem(idToNumber)) {
+				contactFiles.data.filter(data => data.ContactID === idToNumber);
 				dataActivities.filter((activity) => {
-					if (activity.ContactID === idFromUrlToNumber) {
+					if (activity.ContactID === idToNumber) {
 						return activity;
 					}
 					return false;

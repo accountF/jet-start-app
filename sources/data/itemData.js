@@ -1,4 +1,4 @@
-class ItemDataContact {
+class ItemData {
 	constructor() {
 		this.id = null;
 		this.item = null;
@@ -19,8 +19,10 @@ class ItemDataContact {
 
 	setId(id) {
 		this.id = id;
-		return this.item;
+		return this.id;
 	}
 }
 
-export default new ItemDataContact();
+export const ItemDataActivity = new ItemData();
+export const ItemDataContact = new ItemData();
+

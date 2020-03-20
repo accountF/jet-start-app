@@ -10,8 +10,4 @@ export default class ContactDescription extends JetView {
 			]
 		};
 	}
-
-	init() {
-		this.descriptionComponent = this.$$("description");
-	}
 }

@@ -2,7 +2,7 @@ import {JetView} from "webix-jet";
 import {dataContacts} from "../../models/contacts";
 import {dataActivityType} from "../../models/activityType";
 import {dataActivities} from "../../models/activities";
-import ItemDataActivity from "../../data/itemDataActivity";
+import {ItemDataActivity, ItemDataContact} from "../../data/itemData";
 
 export default class formActivity extends JetView {
 	config() {
@@ -115,10 +115,11 @@ export default class formActivity extends JetView {
 		}
 
 		if (this.url[0].page !== "activities") {
-			let idFromContact = +this.getParam("id", true);
-			this.formComponent.elements.ContactID.setValue(idFromContact);
-			this.formComponent.elements.ContactID.config.readonly = true;
-			this.formComponent.elements.ContactID.refresh();
+			let idFromContact = +ItemDataContact.getId();
+			let contactIdField = this.formComponent.elements.ContactID;
+			contactIdField.setValue(idFromContact);
+			contactIdField.config.readonly = true;
+			contactIdField.refresh();
 		}
 	}
 

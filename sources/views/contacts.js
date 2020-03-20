@@ -1,6 +1,7 @@
 import {JetView} from "webix-jet";
 import avatar from "../data/avatar.png";
 import {dataContacts} from "../models/contacts";
+import {ItemDataContact} from "../data/itemData";
 
 export default class Contacts extends JetView {
 	config() {
@@ -40,38 +41,40 @@ export default class Contacts extends JetView {
 		};
 	}
 
-	ready() {
+	init() {
 		this.listComponents = this.$$("contactList");
 		this.listComponents.sync(dataContacts);
 		this.listComponents.attachEvent("onAfterSelect", (id) => {
-			this.setParam("id", id, true);
+			ItemDataContact.setId(id);
+			this.show("./contacts.contactDescription");
 		});
 
 		dataContacts.waitData.then(() => {
-			const idFromUrl = this.getParam("id");
-			const firstContact = this.listComponents.getFirstId();
-			if (dataContacts.getItem(idFromUrl)) {
-				this.listComponents.select(idFromUrl);
+			const idContact = ItemDataContact.getId();
+			const idFirstContact = this.listComponents.getFirstId();
+			if (dataContacts.getItem(idContact)) {
+				this.listComponents.select(idContact);
 			}
-			else if (!idFromUrl && dataContacts.count()) {
-				this.listComponents.select(firstContact);
+			else if (!idContact && dataContacts.count()) {
+				ItemDataContact.setId(idFirstContact);
+				this.listComponents.select(idFirstContact);
 			}
 			else {
 				webix.message("Please check data");
 			}
-			this.show("./contacts.contactDescription");
 		});
 	}
 
 	urlChange() {
-		const idFromUrl = this.getParam("id");
-		if (idFromUrl && dataContacts.getItem(idFromUrl)) {
-			this.listComponents.select(idFromUrl);
+		const idContact = ItemDataContact.getId();
+		if (idContact && dataContacts.getItem(idContact)) {
+			this.listComponents.select(idContact);
 		}
 	}
 
 	openForm() {
 		this.listComponents.unselectAll();
+		ItemDataContact.setId(null);
 		this.show("/top/contacts/contacts.formContact");
 	}
 }

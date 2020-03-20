@@ -1,7 +1,7 @@
 import {JetView} from "webix-jet";
 import {dataContacts} from "../../../models/contacts";
 import {dataStatuses} from "../../../models/statuses";
-import ItemDataContact from "../../../data/itemDataContact";
+import {ItemDataContact} from "../../../data/itemData";
 import avatar from "../../../data/avatar.png";
 import {dataActivities} from "../../../models/activities";
 
@@ -69,10 +69,10 @@ export default class Description extends JetView {
 			dataContacts.waitData,
 			dataStatuses.waitData
 		]).then(() => {
-			const idFromUrl = this.getParam("id", true);
+			const idContact = ItemDataContact.getId();
 			let item;
-			if (idFromUrl && dataContacts.getItem(idFromUrl)) {
-				item = webix.copy(dataContacts.getItem(idFromUrl));
+			if (idContact && dataContacts.getItem(idContact)) {
+				item = webix.copy(dataContacts.getItem(idContact));
 				if (item.StatusID) {
 					item.StatusValue = dataStatuses.getItem(item.StatusID).Value;
 				}
@@ -83,23 +83,24 @@ export default class Description extends JetView {
 	}
 
 	openForm() {
-		const idFromUrl = this.getParam("id", true);
-		ItemDataContact.setId(idFromUrl);
-		ItemDataContact.setItem(dataContacts.getItem(idFromUrl));
+		const idContact = ItemDataContact.getId();
+		ItemDataContact.setId(idContact);
+		ItemDataContact.setItem(dataContacts.getItem(idContact));
 		this.show("./contacts.formContact");
 	}
 
 	deleteContact() {
 		webix.confirm("Are you sure?").then(() => {
-			const idFromUrl = +this.getParam("id", true);
-			dataContacts.remove(idFromUrl);
-			let itemsForDelete = dataActivities.find(activity => activity.ContactID === idFromUrl);
+			const idContact = +ItemDataContact.getId();
+			dataContacts.remove(idContact);
+			let itemsForDelete = dataActivities.find(activity => activity.ContactID === idContact);
 			itemsForDelete.forEach((item) => {
 				dataActivities.remove(item.id);
 			});
 			const idFirstItem = dataContacts.getFirstId();
 			if (idFirstItem) {
-				this.show(`/top/contacts?id=${idFirstItem}/contacts.contactDescription`);
+				ItemDataContact.setId(idFirstItem);
+				this.show("/top/contacts/contacts.contactDescription");
 			}
 			else {
 				this.show("/top/contacts");
