@@ -94,7 +94,6 @@ export default class FormContact extends JetView {
 																	value: "Change photo",
 																	accept: "image/png, image/gif, image/jpg, image/jpeg",
 																	localId: "imageUploader",
-																	link: "userImage",
 																	autosend: false,
 																	multiple: false
 																},

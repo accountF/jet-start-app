@@ -125,7 +125,6 @@ export default class ActivitiesAndFiles extends JetView {
 							localId: "upload",
 							value: "Upload file",
 							name: "files",
-							link: "tableWithFiles",
 							autosend: false
 						}
 					]

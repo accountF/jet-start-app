@@ -96,7 +96,6 @@ export default class formActivity extends JetView {
 
 	init(view, url) {
 		this.formComponent = this.$$("form");
-		this.window = this.$$("windowWithForm");
 		this.url = url;
 	}
 
@@ -153,18 +152,15 @@ export default class formActivity extends JetView {
 				this.setTimeIntoDate(currentDate, time);
 			}
 			const id = ItemDataActivity.getId();
-			dataActivities.waitSave(() => {
-				if (id) {
-					dataActivities.updateItem(dataFromForm.id, dataFromForm);
-					webix.message("Activity was updated");
-				}
-				else {
-					dataActivities.add(dataFromForm, 0);
-					webix.message("Activity was added");
-				}
-			}).then(() => {
-				this.closeWindow();
-			});
+			if (id) {
+				dataActivities.updateItem(dataFromForm.id, dataFromForm);
+				webix.message("Activity was updated");
+			}
+			else {
+				dataActivities.add(dataFromForm, 0);
+				webix.message("Activity was added");
+			}
+			this.closeWindow();
 		}
 	}
 }

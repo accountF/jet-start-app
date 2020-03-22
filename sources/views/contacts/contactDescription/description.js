@@ -4,6 +4,7 @@ import {dataStatuses} from "../../../models/statuses";
 import {ItemDataContact} from "../../../data/itemData";
 import avatar from "../../../data/avatar.png";
 import {dataActivities} from "../../../models/activities";
+import {contactFiles} from "../../../models/contactFiles";
 
 export default class Description extends JetView {
 	config() {
@@ -96,6 +97,10 @@ export default class Description extends JetView {
 			let itemsForDelete = dataActivities.find(activity => activity.ContactID === idContact);
 			itemsForDelete.forEach((item) => {
 				dataActivities.remove(item.id);
+			});
+			let filesForDelete = contactFiles.find(file => file.ContactID === idContact);
+			filesForDelete.forEach((file) => {
+				contactFiles.remove(file.id);
 			});
 			const idFirstItem = dataContacts.getFirstId();
 			if (idFirstItem) {
