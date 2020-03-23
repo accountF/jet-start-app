@@ -73,6 +73,26 @@ export default class Activities extends JetView {
 			}
 		};
 
+		const tabbar = {
+			view: "tabbar",
+			localId: "filter",
+			value: "All",
+			options: [
+				{value: "All"},
+				{value: "Overdue"},
+				{value: "Completed"},
+				{value: "Today"},
+				{value: "Tomorrow"},
+				{value: "This week"},
+				{value: "This month"}
+			],
+			on: {
+				onChange: () => {
+					this.$$("activitiesTable").filterByAll();
+				}
+			}
+		};
+
 		const ui = {
 			rows: [
 				{
@@ -82,6 +102,7 @@ export default class Activities extends JetView {
 						button
 					]
 				},
+				tabbar,
 				table
 			]
 		};
@@ -91,8 +112,60 @@ export default class Activities extends JetView {
 	init() {
 		this.tableComponent = this.$$("activitiesTable");
 		this.window = this.ui(formActivity);
-		this.tableComponent.sync(dataActivities);
-		dataActivities.data.filter();
+		webix.promise.all([
+			dataContacts.waitData,
+			dataActivities.waitData,
+			dataActivityType.waitData
+		]).then(() => {
+			this.tableComponent.sync(dataActivities);
+			dataActivities.data.filter();
+		});
+
+		this.tableComponent.registerFilter(
+			this.$$("filter"),
+			{
+				columnId: "State",
+				compare: (state, filter, item) => {
+					const currentDate = new Date();
+					const tomorrowDate = webix.Date.add(currentDate, 1, "day", true);
+
+					const dateToStr = webix.i18n.dateFormatStr(item.DueDate);
+
+					const weekStart = webix.Date.weekStart(currentDate);
+					const weekEnd = webix.Date.add(weekStart, 8, "day", true);
+
+					const monthStart = webix.Date.monthStart(currentDate);
+					const monthEnd = webix.Date.add(monthStart, 1, "month", true);
+
+					switch (filter) {
+						case "All":
+							return true;
+						case "Overdue":
+							return state === "Open" && item.DueDate < currentDate;
+						case "Completed":
+							return state === "Close";
+						case "Today":
+							return dateToStr === webix.i18n.dateFormatStr(currentDate);
+						case "Tomorrow":
+							return dateToStr === webix.i18n.dateFormatStr(tomorrowDate);
+						case "This week":
+							return item.DueDate > weekStart && item.DueDate < weekEnd;
+						case "This month":
+							return item.DueDate > monthStart && item.DueDate < monthEnd;
+						default:
+							return true;
+					}
+				}
+			},
+			{
+				getValue(node) {
+					return node.getValue();
+				},
+				setValue(node, value) {
+					node.setValue(value);
+				}
+			}
+		);
 	}
 
 	deleteActivity(id) {

@@ -23,6 +23,7 @@ export default class Contacts extends JetView {
 				height: "auto"
 			}
 		};
+
 		const button = {
 			view: "button",
 			label: "Add contact",
@@ -31,10 +32,19 @@ export default class Contacts extends JetView {
 			click: () => this.openForm()
 		};
 
+		const filter = {
+			view: "text",
+			localId: "filter",
+			placeholder: "Type something",
+			on: {
+				onTimedKeyPress: () => this.filter()
+			}
+		};
+
 		return {
 			cols: [
 				{
-					rows: [contactList, button]
+					rows: [filter, contactList, button]
 				},
 				{$subview: true}
 			]
@@ -76,5 +86,17 @@ export default class Contacts extends JetView {
 		this.listComponents.unselectAll();
 		ItemDataContact.setId(null);
 		this.show("/top/contacts/contacts.formContact");
+	}
+
+	filter() {
+		const filterValue = this.$$("filter").getValue().toLowerCase();
+		this.listComponents.filter((contact) => {
+			if (contact.value.toLowerCase().indexOf(filterValue) !== -1 ||
+				contact.Company.toLowerCase().indexOf(filterValue) !== -1 ||
+				contact.Email.toLowerCase().indexOf(filterValue) !== -1 ||
+				contact.Skype.toLowerCase().indexOf(filterValue) !== -1) {
+				return contact;
+			} return false;
+		});
 	}
 }
