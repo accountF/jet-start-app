@@ -108,7 +108,7 @@ export default class FormContact extends JetView {
 																},
 																{
 																	view: "button",
-																	value: _("Delete Photo"),
+																	value: _("Delete photo"),
 																	click: () => this.deletePhoto()
 																}
 															]

@@ -46,8 +46,8 @@ export default {
 	Skype: "Skype",
 	Phone: "Phone",
 	Birthday: "Birthday",
-	"Change Photo": "Change Photo",
-	"Delete Photo": "Delete Photo",
+	"Change photo": "Change photo",
+	"Delete Photo": "Delete photo",
 	Cancel: "Cancel",
 
 	Date: "Date",

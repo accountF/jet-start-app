@@ -47,7 +47,7 @@ export default {
 	Phone: "Телефон",
 	Birthday: "День рождения",
 	"Change photo": "Сменить фото",
-	"Delete Photo": "Удалить фото",
+	"Delete photo": "Удалить фото",
 	Cancel: "Отмена",
 
 	Date: "Дата",

@@ -106,7 +106,7 @@ export default class ActivitiesAndFiles extends JetView {
 							fillspace: true,
 							sort: "date"
 						},
-						{id: "size", header: "Size", sort: this.sortForSize},
+						{id: "size", header: _("Size"), sort: this.sortForSize},
 						{
 							id: "Delete",
 							header: "",
@@ -139,15 +139,15 @@ export default class ActivitiesAndFiles extends JetView {
 				{
 					view: "tabbar",
 					localId: "tab",
-					value: _("ActivityType"),
+					value: "Activities",
 					options: [
-						{value: _("Activity Types"), id: "ActivityType"},
+						{value: _("Activities"), id: "Activities"},
 						{value: _("Files"), id: "Files"}
 					]
 				},
 				{
 					cells: [
-						{localId: "ActivityType", rows: [activities]},
+						{localId: "Activities", rows: [activities]},
 						{localId: "Files", rows: [filesTable]}
 					]
 				}

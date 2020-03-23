@@ -27,16 +27,16 @@ export default class Settings extends JetView {
 						{
 							view: "segmented",
 							localId: "segmentForTables",
-							value: "Activities",
+							value: "ActivityTypes",
 							options: [
-								{value: _("Activities"), id: "Activities"},
+								{value: _("Activity Types"), id: "ActivityTypes"},
 								{value: _("Statuses"), id: "Statuses"}
 							]
 						},
 						{
 							cells: [
 								{
-									localId: "Activities",
+									localId: "ActivityTypes",
 									rows: [
 										new Table(this.app, "", dataActivityType)
 									]
