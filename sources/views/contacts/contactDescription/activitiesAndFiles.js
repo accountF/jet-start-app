@@ -172,14 +172,15 @@ export default class ActivitiesAndFiles extends JetView {
 
 	urlChange() {
 		webix.promise.all([
+			dataContacts.waitData,
 			dataActivities.waitData,
-			contactFiles.waitData
+			dataActivityType.waitData
 		]).then(() => {
-			const idToNumber = +ItemDataContact.getId();
+			const idToNumber = ItemDataContact.getId();
 			if (idToNumber && dataContacts.getItem(idToNumber)) {
-				contactFiles.data.filter(data => data.ContactID === idToNumber);
-				dataActivities.filter((activity) => {
-					if (activity.ContactID === idToNumber) {
+				contactFiles.data.filter(file => file.ContactID === idToNumber);
+				dataActivities.data.filter((activity) => {
+					if (+activity.ContactID === +idToNumber) {
 						return activity;
 					}
 					return false;
