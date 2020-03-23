@@ -19,8 +19,10 @@ class ItemData {
 
 	setId(id) {
 		this.id = id;
-		return this.item;
+		return this.id;
 	}
 }
 
-export default new ItemData();
+export const ItemDataActivity = new ItemData();
+export const ItemDataContact = new ItemData();
+

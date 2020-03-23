@@ -2,9 +2,9 @@ import {JetView} from "webix-jet";
 import {dataContacts} from "../../models/contacts";
 import {dataActivityType} from "../../models/activityType";
 import {dataActivities} from "../../models/activities";
-import ItemData from "../../data/itemData";
+import {ItemDataActivity, ItemDataContact} from "../../data/itemData";
 
-export default class formForAddActivity extends JetView {
+export default class formActivity extends JetView {
 	config() {
 		return {
 			view: "window",
@@ -36,6 +36,7 @@ export default class formForAddActivity extends JetView {
 					},
 					{
 						view: "richselect",
+						localId: "Contact",
 						label: "Contact",
 						name: "ContactID",
 						options: {
@@ -75,7 +76,11 @@ export default class formForAddActivity extends JetView {
 					{
 						cols: [
 							{},
-							{view: "button", localId: "btnAdd", click: () => this.addOrUpdateActivity()},
+							{
+								view: "button",
+								localId: "btnAdd",
+								click: () => this.addOrUpdateActivity()
+							},
 							{view: "button", value: "Cancel", click: () => this.closeWindow()}
 						]
 					}
@@ -89,29 +94,37 @@ export default class formForAddActivity extends JetView {
 		};
 	}
 
-	ready() {
+	init(view, url) {
 		this.formComponent = this.$$("form");
-		this.window = this.$$("windowWithForm");
+		this.url = url;
 	}
 
-	showWindow() {
+	showWindow(page) {
 		this.getRoot().show();
-		const id = ItemData.getId();
+		const id = ItemDataActivity.getId();
 		const nameForm = id ? "Edit" : "Add";
 		const nameButton = id ? "Save" : "Add";
 		this.$$("header").setValues({nameForm});
 		this.$$("btnAdd").setValue(nameButton);
+
 		if (id) {
-			const item = ItemData.getItem();
+			const item = ItemDataActivity.getItem();
 			item.Time = item.DueDate;
 			this.formComponent.setValues(item);
+		}
+
+		if (page === "contact") {
+			let idFromContact = ItemDataContact.getId().toString();
+			let contactIdField = this.formComponent.elements.ContactID;
+			contactIdField.setValue(idFromContact);
+			contactIdField.disable();
 		}
 	}
 
 	closeWindow() {
 		this.formComponent.clear();
 		this.formComponent.clearValidation();
-		ItemData.setId(null);
+		ItemDataActivity.setId(null);
 		this.getRoot().hide();
 	}
 
@@ -137,18 +150,16 @@ export default class formForAddActivity extends JetView {
 				const currentDate = new Date();
 				this.setTimeIntoDate(currentDate, time);
 			}
-			const id = ItemData.getId();
+			const id = ItemDataActivity.getId();
 			if (id) {
 				dataActivities.updateItem(dataFromForm.id, dataFromForm);
 				webix.message("Activity was updated");
-				ItemData.setId(null);
-			} else {
+			}
+			else {
 				dataActivities.add(dataFromForm, 0);
 				webix.message("Activity was added");
 			}
-			this.formComponent.clear();
-			this.formComponent.clearValidation();
-			this.getRoot().hide();
+			this.closeWindow();
 		}
 	}
 }

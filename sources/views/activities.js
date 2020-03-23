@@ -2,8 +2,8 @@ import {JetView} from "webix-jet";
 import {dataActivities} from "../models/activities";
 import {dataContacts} from "../models/contacts";
 import {dataActivityType} from "../models/activityType";
-import formActivity from "./activities/formForAddActivity";
-import ItemData from "../data/itemData";
+import formActivity from "./activities/formActivity";
+import {ItemDataActivity} from "../data/itemData";
 
 export default class Activities extends JetView {
 	config() {
@@ -15,6 +15,7 @@ export default class Activities extends JetView {
 		};
 		const table = {
 			view: "datatable",
+			select: true,
 			localId: "activitiesTable",
 			columns: [
 				{
@@ -35,7 +36,8 @@ export default class Activities extends JetView {
 					fillspace: true,
 					header: [
 						"DueDate",
-						{content: "datepickerFilter",
+						{
+							content: "datepickerFilter",
 							compare(cellValue, filterValue) {
 								const dateToStr = webix.i18n.dateFormatStr(cellValue);
 								const filterToStr = webix.i18n.dateFormatStr(filterValue);
@@ -88,21 +90,21 @@ export default class Activities extends JetView {
 
 	init() {
 		this.tableComponent = this.$$("activitiesTable");
-		this.tableComponent.sync(dataActivities);
 		this.window = this.ui(formActivity);
+		this.tableComponent.sync(dataActivities);
+		dataActivities.data.filter();
 	}
 
 	deleteActivity(id) {
-		webix.confirm("Are you sure?")
-			.then(() => {
-				dataActivities.remove(id.row);
-			});
+		webix.confirm("Are you sure?").then(() => {
+			dataActivities.remove(id.row);
+		});
 	}
 
 	editActivity(id) {
 		const item = dataActivities.getItem(id.row);
-		ItemData.setItem(item);
-		ItemData.setId(id.row);
+		ItemDataActivity.setItem(item);
+		ItemDataActivity.setId(id.row);
 		this.window.showWindow();
 	}
 }
