@@ -7,10 +7,11 @@ import {ItemDataActivity} from "../data/itemData";
 
 export default class Activities extends JetView {
 	config() {
+		const _ = this.app.getService("locale")._;
 		const button = {
 			view: "button",
 			width: 150,
-			value: "<span class='webix_icon mdi mdi-plus-box'></span> Add Activity",
+			value: `<span class='webix_icon mdi mdi-plus-box'></span> ${_("Add Activity")}`,
 			click: () => this.window.showWindow()
 		};
 		const table = {
@@ -21,12 +22,13 @@ export default class Activities extends JetView {
 				{
 					id: "State",
 					template: "{common.checkbox()}",
+					header: _("State"),
 					checkValue: "Close",
 					uncheckValue: "Open"
 				},
 				{
 					id: "TypeID",
-					header: ["Type", {content: "selectFilter"}],
+					header: [_("Type"), {content: "selectFilter"}],
 					options: dataActivityType,
 					fillspace: true,
 					sort: "text"
@@ -35,7 +37,7 @@ export default class Activities extends JetView {
 					id: "DueDate",
 					fillspace: true,
 					header: [
-						"DueDate",
+						_("DueDate"),
 						{
 							content: "datepickerFilter",
 							compare(cellValue, filterValue) {
@@ -53,13 +55,13 @@ export default class Activities extends JetView {
 				},
 				{
 					id: "Details",
-					header: ["Details", {content: "textFilter"}],
+					header: [_("Details"), {content: "textFilter"}],
 					fillspace: true,
 					sort: "string"
 				},
 				{
 					id: "ContactID",
-					header: ["Contact", {content: "selectFilter"}],
+					header: [_("Contact"), {content: "selectFilter"}],
 					options: dataContacts,
 					fillspace: true,
 					sort: "text"
@@ -78,13 +80,13 @@ export default class Activities extends JetView {
 			localId: "filter",
 			value: "All",
 			options: [
-				{value: "All"},
-				{value: "Overdue"},
-				{value: "Completed"},
-				{value: "Today"},
-				{value: "Tomorrow"},
-				{value: "This week"},
-				{value: "This month"}
+				{value: _("All")},
+				{value: _("Overdue")},
+				{value: _("Completed")},
+				{value: _("Today")},
+				{value: _("Tomorrow")},
+				{value: _("This week")},
+				{value: _("This month")}
 			],
 			on: {
 				onChange: () => {
@@ -110,6 +112,7 @@ export default class Activities extends JetView {
 	}
 
 	init() {
+		this._ = this.app.getService("locale")._;
 		this.tableComponent = this.$$("activitiesTable");
 		this.window = this.ui(formActivity);
 		webix.promise.all([
@@ -138,19 +141,19 @@ export default class Activities extends JetView {
 					const monthEnd = webix.Date.add(monthStart, 1, "month", true);
 
 					switch (filter) {
-						case "All":
+						case this._("All"):
 							return true;
-						case "Overdue":
+						case this._("Overdue"):
 							return state === "Open" && item.DueDate < currentDate;
-						case "Completed":
+						case this._("Completed"):
 							return state === "Close";
-						case "Today":
+						case this._("Today"):
 							return dateToStr === webix.i18n.dateFormatStr(currentDate);
-						case "Tomorrow":
+						case this._("Tomorrow"):
 							return dateToStr === webix.i18n.dateFormatStr(tomorrowDate);
-						case "This week":
+						case this._("This week"):
 							return item.DueDate > weekStart && item.DueDate < weekEnd;
-						case "This month":
+						case this._("This month"):
 							return item.DueDate > monthStart && item.DueDate < monthEnd;
 						default:
 							return true;
@@ -169,7 +172,7 @@ export default class Activities extends JetView {
 	}
 
 	deleteActivity(id) {
-		webix.confirm("Are you sure?").then(() => {
+		webix.confirm(this._("Are you sure?")).then(() => {
 			dataActivities.remove(id.row);
 		});
 	}

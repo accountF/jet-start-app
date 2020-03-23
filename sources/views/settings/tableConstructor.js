@@ -7,6 +7,7 @@ export default class Table extends JetView {
 	}
 
 	config() {
+		const _ = this.app.getService("locale")._;
 		return {
 			rows: [
 				{
@@ -15,14 +16,14 @@ export default class Table extends JetView {
 					editable: true,
 					select: true,
 					columns: [
-						{id: "Value", header: "Value", fillspace: true, editor: "text"},
-						{id: "Icon", header: "Icon", editor: "text", template: obj => `<span class='mdi mdi-${obj.Icon}'></span>`}
+						{id: "Value", header: _("Value"), fillspace: true, editor: "text"},
+						{id: "Icon", header: _("Icon"), editor: "text", template: obj => `<span class='mdi mdi-${obj.Icon}'></span>`}
 					]
 				},
 				{
 					cols: [
-						{view: "button", value: "Add", click: () => this.addItem()},
-						{view: "button", value: "Delete", click: () => this.deletedItem()}
+						{view: "button", value: _("Add"), click: () => this.addItem()},
+						{view: "button", value: _("Delete"), click: () => this.deletedItem()}
 					]
 				}
 			]
@@ -30,6 +31,7 @@ export default class Table extends JetView {
 	}
 
 	init() {
+		this._ = this.app.getService("locale")._;
 		this.tableComponent = this.$$("table");
 		this._tableData.waitData.then(() => {
 			this.tableComponent.parse(this._tableData);
@@ -47,10 +49,12 @@ export default class Table extends JetView {
 	deletedItem() {
 		const id = this.tableComponent.getSelectedId();
 		if (id) {
-			this._tableData.remove(id);
+			webix.confirm(this._("Are you sure?")).then(() => {
+				this._tableData.remove(id);
+			});
 		}
 		else {
-			webix.message("Element is not chosen");
+			webix.message(this._("Element is not chosen"));
 		}
 	}
 }

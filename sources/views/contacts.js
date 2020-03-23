@@ -5,6 +5,7 @@ import {ItemDataContact} from "../data/itemData";
 
 export default class Contacts extends JetView {
 	config() {
+		const _ = this.app.getService("locale")._;
 		const contactList = {
 			view: "list",
 			localId: "contactList",
@@ -26,7 +27,7 @@ export default class Contacts extends JetView {
 
 		const button = {
 			view: "button",
-			label: "Add contact",
+			label: _("Add contact"),
 			type: "icon",
 			icon: "wxi-plus",
 			click: () => this.openForm()
@@ -35,7 +36,7 @@ export default class Contacts extends JetView {
 		const filter = {
 			view: "text",
 			localId: "filter",
-			placeholder: "Type something",
+			placeholder: _("Type something"),
 			on: {
 				onTimedKeyPress: () => this.filter()
 			}
@@ -52,6 +53,7 @@ export default class Contacts extends JetView {
 	}
 
 	init() {
+		this._ = this.app.getService("locale")._;
 		this.listComponents = this.$$("contactList");
 		this.listComponents.sync(dataContacts);
 		this.listComponents.attachEvent("onAfterSelect", (id) => {
@@ -70,7 +72,7 @@ export default class Contacts extends JetView {
 				this.listComponents.select(idFirstContact);
 			}
 			else {
-				webix.message("Please check data");
+				webix.message(this._("Please check data"));
 			}
 		});
 	}

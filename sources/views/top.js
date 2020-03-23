@@ -2,6 +2,7 @@ import {JetView, plugins} from "webix-jet";
 
 export default class TopView extends JetView {
 	config() {
+		const _ = this.app.getService("locale")._;
 		const header = {
 			type: "header",
 			localId: "nameOfPage",
@@ -18,9 +19,9 @@ export default class TopView extends JetView {
 			select: true,
 			template: "<span class='webix_icon mdi mdi-#icon#'></span> #value#",
 			data: [
-				{value: "Contacts", id: "contacts", icon: "account-group"},
-				{value: "Activities", id: "activities", icon: "calendar"},
-				{value: "Settings", id: "settings", icon: "cogs"}
+				{value: _("Contacts"), id: "contacts", icon: "account-group"},
+				{value: _("Activities"), id: "activities", icon: "calendar"},
+				{value: _("Settings"), id: "settings", icon: "cogs"}
 			]
 		};
 
