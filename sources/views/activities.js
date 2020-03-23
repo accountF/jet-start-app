@@ -62,12 +62,7 @@ export default class Activities extends JetView {
 					header: ["Contact", {content: "selectFilter"}],
 					options: dataContacts,
 					fillspace: true,
-					sort: "text",
-					on: {
-						onBeforeFilter(id) {
-							this.getFilter(id).disabled = true;
-						}
-					}
+					sort: "text"
 				},
 				{id: "edit", header: "", template: "{common.editIcon()}", width: 50},
 				{id: "del", header: "", template: "{common.trashIcon()}", width: 50}

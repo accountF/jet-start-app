@@ -92,7 +92,7 @@ export default class Description extends JetView {
 
 	deleteContact() {
 		webix.confirm("Are you sure?").then(() => {
-			const idContact = +ItemDataContact.getId();
+			const idContact = ItemDataContact.getId().toString();
 			dataContacts.remove(idContact);
 			let itemsForDelete = dataActivities.find(activity => activity.ContactID === idContact);
 			itemsForDelete.forEach((item) => {

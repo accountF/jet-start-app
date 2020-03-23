@@ -70,7 +70,7 @@ export default class ActivitiesAndFiles extends JetView {
 							width: 200,
 							css: "webix_primary",
 							value: "<span class='webix_icon mdi mdi-plus-box'></span> Add Activity",
-							click: () => this.window.showWindow()
+							click: () => this.window.showWindow("contact")
 						}
 					]
 				}
@@ -159,9 +159,9 @@ export default class ActivitiesAndFiles extends JetView {
 		this.window = this.ui(formActivity);
 		this.$$("tab").attachEvent("onChange", id => this.$$(id).show());
 		this.$$("upload").attachEvent("onBeforeFileAdd", (file) => {
-			const idToNumber = +ItemDataContact.getId();
+			const idToString = ItemDataContact.getId().toString();
 			const dataFile = {
-				ContactID: idToNumber,
+				ContactID: idToString,
 				name: file.name,
 				date: file.file.lastModifiedDate,
 				size: file.sizetext
@@ -176,11 +176,11 @@ export default class ActivitiesAndFiles extends JetView {
 			dataActivities.waitData,
 			dataActivityType.waitData
 		]).then(() => {
-			const idToNumber = ItemDataContact.getId();
-			if (idToNumber && dataContacts.getItem(idToNumber)) {
-				contactFiles.data.filter(file => file.ContactID === idToNumber);
+			const id = ItemDataContact.getId();
+			if (id && dataContacts.getItem(id)) {
+				contactFiles.data.filter(file => file.ContactID === id);
 				dataActivities.data.filter((activity) => {
-					if (+activity.ContactID === +idToNumber) {
+					if (activity.ContactID.toString() === id.toString()) {
 						return activity;
 					}
 					return false;
@@ -209,6 +209,6 @@ export default class ActivitiesAndFiles extends JetView {
 		const item = dataActivities.getItem(id.row);
 		ItemDataActivity.setItem(item);
 		ItemDataActivity.setId(id.row);
-		this.window.showWindow();
+		this.window.showWindow("contact");
 	}
 }

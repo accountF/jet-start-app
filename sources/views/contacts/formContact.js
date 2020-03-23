@@ -31,19 +31,24 @@ export default class FormContact extends JetView {
 													view: "text",
 													label: "First name",
 													name: "FirstName",
-													invalidMessage: "First Name must be filled in"
+													invalidMessage: "First Name must be filled in",
+													required: true,
+													labelWidth: 100
 												},
 												{
 													view: "text",
 													label: "Last name",
 													name: "LastName",
-													invalidMessage: "Last Name must be filled in"
+													invalidMessage: "Last Name must be filled in",
+													required: true,
+													labelWidth: 100
 												},
 												{
 													view: "datepicker",
 													label: "Joining date",
 													name: "StartDate",
-													format: webix.i18n.longDateFormatStr
+													format: webix.i18n.longDateFormatStr,
+													labelWidth: 100
 												},
 												{
 													view: "richselect",
@@ -57,25 +62,28 @@ export default class FormContact extends JetView {
 															template: "#value#"
 														}
 													},
-													invalidMessage: "Status must be filled in"
+													invalidMessage: "Status must be filled in",
+													required: true,
+													labelWidth: 100
 												},
-												{view: "text", label: "Job", name: "Job", invalidMessage: "Job must be filled in"},
-												{view: "text", label: "Company", name: "Company", invalidMessage: "Company must be filled in"},
-												{view: "text", label: "Website", name: "Website"},
-												{view: "text", label: "Address", name: "Address"}
+												{view: "text", label: "Job", name: "Job", invalidMessage: "Job must be filled in", required: true, labelWidth: 100},
+												{view: "text", label: "Company", name: "Company", invalidMessage: "Company must be filled in", required: true, labelWidth: 100},
+												{view: "text", label: "Website", name: "Website", labelWidth: 100},
+												{view: "text", label: "Address", name: "Address", labelWidth: 100}
 											]
 										},
 										{
 											paddingX: 10,
 											rows: [
-												{view: "text", label: "Email", name: "Email"},
-												{view: "text", label: "Skype", name: "Skype"},
-												{view: "text", label: "Phone", name: "Phone"},
+												{view: "text", label: "Email", name: "Email", labelWidth: 100},
+												{view: "text", label: "Skype", name: "Skype", labelWidth: 100},
+												{view: "text", label: "Phone", name: "Phone", labelWidth: 100},
 												{
 													view: "datepicker",
 													label: "Birthday",
 													name: "Birthday",
-													format: webix.i18n.longDateFormatStr
+													format: webix.i18n.longDateFormatStr,
+													labelWidth: 100
 												},
 												{
 													cols: [
@@ -201,6 +209,6 @@ export default class FormContact extends JetView {
 	}
 
 	deletePhoto() {
-		this.image.setValues({Photo: avatar});
+		this.image.setValues({Photo: ""});
 	}
 }

@@ -99,7 +99,7 @@ export default class formActivity extends JetView {
 		this.url = url;
 	}
 
-	showWindow() {
+	showWindow(page) {
 		this.getRoot().show();
 		const id = ItemDataActivity.getId();
 		const nameForm = id ? "Edit" : "Add";
@@ -113,12 +113,11 @@ export default class formActivity extends JetView {
 			this.formComponent.setValues(item);
 		}
 
-		if (this.url[0].page !== "activities") {
-			let idFromContact = +ItemDataContact.getId();
+		if (page === "contact") {
+			let idFromContact = ItemDataContact.getId().toString();
 			let contactIdField = this.formComponent.elements.ContactID;
 			contactIdField.setValue(idFromContact);
-			contactIdField.config.readonly = true;
-			contactIdField.refresh();
+			contactIdField.disable();
 		}
 	}
 
