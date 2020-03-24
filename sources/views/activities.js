@@ -10,7 +10,7 @@ export default class Activities extends JetView {
 		const _ = this.app.getService("locale")._;
 		const button = {
 			view: "button",
-			width: 150,
+			autowidth: true,
 			value: `<span class='webix_icon mdi mdi-plus-box'></span> ${_("Add Activity")}`,
 			click: () => this.window.showWindow()
 		};
@@ -31,7 +31,13 @@ export default class Activities extends JetView {
 					header: [_("Type"), {content: "selectFilter"}],
 					options: dataActivityType,
 					fillspace: true,
-					sort: "text"
+					sort: "text",
+					template: (obj) => {
+						const item = dataActivityType.getItem(obj.TypeID);
+						const value = item.Value;
+						const icon = item.Icon;
+						return `<span class="mdi mdi-${icon}"></span> ${value} `;
+					}
 				},
 				{
 					id: "DueDate",
@@ -120,6 +126,7 @@ export default class Activities extends JetView {
 			dataActivities.waitData,
 			dataActivityType.waitData
 		]).then(() => {
+
 			this.tableComponent.sync(dataActivities);
 			dataActivities.data.filter();
 		});
@@ -141,9 +148,14 @@ export default class Activities extends JetView {
 		);
 	}
 
+	urlChange() {
+		this.$$("activitiesTable").filterByAll();
+	}
+
 	deleteActivity(id) {
 		webix.confirm(this._("Are you sure?")).then(() => {
 			dataActivities.remove(id.row);
+			this.$$("activitiesTable").filterByAll();
 		});
 	}
 
@@ -152,6 +164,7 @@ export default class Activities extends JetView {
 		ItemDataActivity.setItem(item);
 		ItemDataActivity.setId(id.row);
 		this.window.showWindow();
+		this.$$("activitiesTable").filterByAll();
 	}
 
 	filterActivity(state, filter, item) {

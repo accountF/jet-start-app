@@ -30,7 +30,7 @@ export default class formActivity extends JetView {
 							body: {
 								view: "list",
 								data: dataActivityType,
-								template: "#value#"
+								template: "<span class='mdi mdi-#Icon#'></span> #Value#"
 							}
 						},
 						invalidMessage: _("Type must be filled in")
@@ -129,6 +129,7 @@ export default class formActivity extends JetView {
 		this.formComponent.clearValidation();
 		ItemDataActivity.setId(null);
 		this.getRoot().hide();
+		this.show("/top/activities");
 	}
 
 	setTimeIntoDate(date, time) {

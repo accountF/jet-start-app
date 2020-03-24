@@ -77,7 +77,8 @@ export default class Description extends JetView {
 			if (idContact && dataContacts.getItem(idContact)) {
 				item = webix.copy(dataContacts.getItem(idContact));
 				if (item.StatusID) {
-					item.StatusValue = dataStatuses.getItem(item.StatusID).Value;
+					const statusItem = dataStatuses.getItem(item.StatusID);
+					item.StatusValue = statusItem.value;
 				}
 				item.BirthdayLong = webix.i18n.longDateFormatStr(item.Birthday);
 			}

@@ -82,6 +82,7 @@ export default class Contacts extends JetView {
 		if (idContact && dataContacts.getItem(idContact)) {
 			this.listComponents.select(idContact);
 		}
+		this.filter();
 	}
 
 	openForm() {

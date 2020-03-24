@@ -1,4 +1,5 @@
 import {JetView} from "webix-jet";
+import {icons} from "../../models/icons";
 
 export default class Table extends JetView {
 	constructor(app, name, data) {
@@ -8,6 +9,13 @@ export default class Table extends JetView {
 
 	config() {
 		const _ = this.app.getService("locale")._;
+		const popup = {
+			view: "suggest",
+			body: {
+				template: "<span class='mdi mdi-#value#'></span> #value#"
+			}
+		};
+
 		return {
 			rows: [
 				{
@@ -17,7 +25,14 @@ export default class Table extends JetView {
 					select: true,
 					columns: [
 						{id: "Value", header: _("Value"), fillspace: true, editor: "text"},
-						{id: "Icon", header: _("Icon"), editor: "text", template: obj => `<span class='mdi mdi-${obj.Icon}'></span>`}
+						{
+							id: "Icon",
+							header: _("Icon"),
+							template: obj => `<span class="mdi mdi-${obj.Icon}"></span> ${obj.Icon}`,
+							editor: "richselect",
+							collection: icons,
+							popup
+						}
 					]
 				},
 				{
@@ -52,8 +67,7 @@ export default class Table extends JetView {
 			webix.confirm(this._("Are you sure?")).then(() => {
 				this._tableData.remove(id);
 			});
-		}
-		else {
+		} else {
 			webix.message(this._("Element is not chosen"));
 		}
 	}
