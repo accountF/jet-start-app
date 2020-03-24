@@ -128,37 +128,7 @@ export default class Activities extends JetView {
 			this.$$("filter"),
 			{
 				columnId: "State",
-				compare: (state, filter, item) => {
-					const currentDate = new Date();
-					const tomorrowDate = webix.Date.add(currentDate, 1, "day", true);
-
-					const dateToStr = webix.i18n.dateFormatStr(item.DueDate);
-
-					const weekStart = webix.Date.weekStart(currentDate);
-					const weekEnd = webix.Date.add(weekStart, 8, "day", true);
-
-					const monthStart = webix.Date.monthStart(currentDate);
-					const monthEnd = webix.Date.add(monthStart, 1, "month", true);
-
-					switch (filter) {
-						case this._("All"):
-							return true;
-						case this._("Overdue"):
-							return state === "Open" && item.DueDate < currentDate;
-						case this._("Completed"):
-							return state === "Close";
-						case this._("Today"):
-							return dateToStr === webix.i18n.dateFormatStr(currentDate);
-						case this._("Tomorrow"):
-							return dateToStr === webix.i18n.dateFormatStr(tomorrowDate);
-						case this._("This week"):
-							return item.DueDate > weekStart && item.DueDate < weekEnd;
-						case this._("This month"):
-							return item.DueDate > monthStart && item.DueDate < monthEnd;
-						default:
-							return true;
-					}
-				}
+				compare: (state, filter, item) => this.filterActivity(state, filter, item)
 			},
 			{
 				getValue(node) {
@@ -182,5 +152,37 @@ export default class Activities extends JetView {
 		ItemDataActivity.setItem(item);
 		ItemDataActivity.setId(id.row);
 		this.window.showWindow();
+	}
+
+	filterActivity(state, filter, item) {
+		const currentDate = new Date();
+		const tomorrowDate = webix.Date.add(currentDate, 1, "day", true);
+
+		const dateToStr = webix.i18n.dateFormatStr(item.DueDate);
+
+		const weekStart = webix.Date.weekStart(currentDate);
+		const weekEnd = webix.Date.add(weekStart, 8, "day", true);
+
+		const monthStart = webix.Date.monthStart(currentDate);
+		const monthEnd = webix.Date.add(monthStart, 1, "month", true);
+
+		switch (filter) {
+			case this._("All"):
+				return true;
+			case this._("Overdue"):
+				return state === "Open" && item.DueDate < currentDate;
+			case this._("Completed"):
+				return state === "Close";
+			case this._("Today"):
+				return dateToStr === webix.i18n.dateFormatStr(currentDate);
+			case this._("Tomorrow"):
+				return dateToStr === webix.i18n.dateFormatStr(tomorrowDate);
+			case this._("This week"):
+				return item.DueDate > weekStart && item.DueDate < weekEnd;
+			case this._("This month"):
+				return item.DueDate > monthStart && item.DueDate < monthEnd;
+			default:
+				return true;
+		}
 	}
 }
