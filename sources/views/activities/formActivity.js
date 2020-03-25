@@ -6,12 +6,13 @@ import {ItemDataActivity, ItemDataContact} from "../../data/itemData";
 
 export default class formActivity extends JetView {
 	config() {
+		const _ = this.app.getService("locale")._;
 		return {
 			view: "window",
 			localId: "windowWithForm",
 			position: "center",
 			head: {
-				template: "#nameForm# activity",
+				template: `#nameForm# ${_("activity")}`,
 				localId: "header"
 			},
 			width: 500,
@@ -19,25 +20,25 @@ export default class formActivity extends JetView {
 				view: "form",
 				localId: "form",
 				elements: [
-					{view: "textarea", label: "Details", name: "Details"},
+					{view: "textarea", label: _("Details"), name: "Details"},
 					{
 						view: "richselect",
-						label: "Type",
+						label: _("Type"),
 						name: "TypeID",
 						options: {
 							view: "suggest",
 							body: {
 								view: "list",
 								data: dataActivityType,
-								template: "#value#"
+								template: "<span class='mdi mdi-#Icon#'></span> #Value#"
 							}
 						},
-						invalidMessage: "Type must be filled in"
+						invalidMessage: _("Type must be filled in")
 					},
 					{
 						view: "richselect",
 						localId: "Contact",
-						label: "Contact",
+						label: _("Contact"),
 						name: "ContactID",
 						options: {
 							view: "suggest",
@@ -47,19 +48,19 @@ export default class formActivity extends JetView {
 								template: "#FirstName#"
 							}
 						},
-						invalidMessage: "Contact must be filled in"
+						invalidMessage: _("Contact must be filled in")
 					},
 					{
 						cols: [
 							{
 								view: "datepicker",
-								label: "Date",
+								label: _("Date"),
 								name: "DueDate",
 								format: webix.i18n.longDateFormatStr
 							},
 							{
 								view: "datepicker",
-								label: "Time",
+								label: _("Time"),
 								name: "Time",
 								type: "time",
 								format: webix.i18n.timeFormat
@@ -68,7 +69,7 @@ export default class formActivity extends JetView {
 					},
 					{
 						view: "checkbox",
-						label: "Completed",
+						label: _("Completed"),
 						name: "State",
 						checkValue: "Close",
 						uncheckValue: "Open"
@@ -79,9 +80,10 @@ export default class formActivity extends JetView {
 							{
 								view: "button",
 								localId: "btnAdd",
+								value: _("Add"),
 								click: () => this.addOrUpdateActivity()
 							},
-							{view: "button", value: "Cancel", click: () => this.closeWindow()}
+							{view: "button", value: _("Cancel"), click: () => this.closeWindow()}
 						]
 					}
 				],
@@ -95,6 +97,7 @@ export default class formActivity extends JetView {
 	}
 
 	init(view, url) {
+		this._ = this.app.getService("locale")._;
 		this.formComponent = this.$$("form");
 		this.url = url;
 	}
@@ -102,8 +105,8 @@ export default class formActivity extends JetView {
 	showWindow(page) {
 		this.getRoot().show();
 		const id = ItemDataActivity.getId();
-		const nameForm = id ? "Edit" : "Add";
-		const nameButton = id ? "Save" : "Add";
+		const nameForm = id ? this._("Edit") : this._("Add");
+		const nameButton = id ? this._("Save") : this._("Add");
 		this.$$("header").setValues({nameForm});
 		this.$$("btnAdd").setValue(nameButton);
 
@@ -126,6 +129,7 @@ export default class formActivity extends JetView {
 		this.formComponent.clearValidation();
 		ItemDataActivity.setId(null);
 		this.getRoot().hide();
+		this.show("/top/activities");
 	}
 
 	setTimeIntoDate(date, time) {
@@ -137,7 +141,7 @@ export default class formActivity extends JetView {
 
 	addOrUpdateActivity() {
 		if (!this.formComponent.validate()) {
-			webix.message("Please check fields");
+			webix.message(this._("Please check fields"));
 		}
 		else {
 			const dataFromForm = this.formComponent.getValues();
@@ -153,11 +157,11 @@ export default class formActivity extends JetView {
 			const id = ItemDataActivity.getId();
 			if (id) {
 				dataActivities.updateItem(dataFromForm.id, dataFromForm);
-				webix.message("Activity was updated");
+				webix.message(this._("Activity was updated"));
 			}
 			else {
 				dataActivities.add(dataFromForm, 0);
-				webix.message("Activity was added");
+				webix.message(this._("Activity was added"));
 			}
 			this.closeWindow();
 		}

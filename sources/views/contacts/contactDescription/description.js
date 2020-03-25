@@ -8,6 +8,7 @@ import {contactFiles} from "../../../models/contactFiles";
 
 export default class Description extends JetView {
 	config() {
+		const _ = this.app.getService("locale")._;
 		return {
 			rows: [
 				{
@@ -16,7 +17,7 @@ export default class Description extends JetView {
 						{},
 						{
 							view: "button",
-							label: "Delete",
+							label: _("Delete"),
 							type: "icon",
 							icon: "wxi-trash",
 							width: 150,
@@ -24,7 +25,7 @@ export default class Description extends JetView {
 						},
 						{
 							view: "button",
-							label: "Edit",
+							label: _("Edit"),
 							type: "icon",
 							icon: "mdi mdi-square-edit-outline",
 							width: 150,
@@ -62,6 +63,7 @@ export default class Description extends JetView {
 	}
 
 	init() {
+		this._ = this.app.getService("locale")._;
 		this.descriptionComponent = this.$$("description");
 	}
 
@@ -75,7 +77,8 @@ export default class Description extends JetView {
 			if (idContact && dataContacts.getItem(idContact)) {
 				item = webix.copy(dataContacts.getItem(idContact));
 				if (item.StatusID) {
-					item.StatusValue = dataStatuses.getItem(item.StatusID).Value;
+					const statusItem = dataStatuses.getItem(item.StatusID);
+					item.StatusValue = statusItem.value;
 				}
 				item.BirthdayLong = webix.i18n.longDateFormatStr(item.Birthday);
 			}
@@ -91,7 +94,7 @@ export default class Description extends JetView {
 	}
 
 	deleteContact() {
-		webix.confirm("Are you sure?").then(() => {
+		webix.confirm(this._("Are you sure?")).then(() => {
 			const idContact = ItemDataContact.getId().toString();
 			dataContacts.remove(idContact);
 			let itemsForDelete = dataActivities.find(activity => activity.ContactID === idContact);

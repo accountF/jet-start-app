@@ -8,6 +8,7 @@ import {dataContacts} from "../../../models/contacts";
 
 export default class ActivitiesAndFiles extends JetView {
 	config() {
+		const _ = this.app.getService("locale")._;
 		const activities = {
 			rows: [
 				{
@@ -18,12 +19,13 @@ export default class ActivitiesAndFiles extends JetView {
 						{
 							id: "State",
 							template: "{common.checkbox()}",
+							header: _("State"),
 							checkValue: "Close",
 							uncheckValue: "Open"
 						},
 						{
 							id: "TypeID",
-							header: ["Type", {content: "selectFilter"}],
+							header: [_("Type"), {content: "selectFilter"}],
 							options: dataActivityType,
 							fillspace: true,
 							sort: "text"
@@ -32,7 +34,7 @@ export default class ActivitiesAndFiles extends JetView {
 							id: "DueDate",
 							fillspace: true,
 							header: [
-								"DueDate",
+								_("DueDate"),
 								{
 									content: "datepickerFilter",
 									compare(cellValue, filterValue) {
@@ -50,7 +52,7 @@ export default class ActivitiesAndFiles extends JetView {
 						},
 						{
 							id: "Details",
-							header: ["Details", {content: "textFilter"}],
+							header: [_("Details"), {content: "textFilter"}],
 							fillspace: true,
 							sort: "string"
 						},
@@ -69,7 +71,7 @@ export default class ActivitiesAndFiles extends JetView {
 							view: "button",
 							width: 200,
 							css: "webix_primary",
-							value: "<span class='webix_icon mdi mdi-plus-box'></span> Add Activity",
+							value: `<span class='webix_icon mdi mdi-plus-box'></span> ${_("Add Activity")}`,
 							click: () => this.window.showWindow("contact")
 						}
 					]
@@ -90,13 +92,13 @@ export default class ActivitiesAndFiles extends JetView {
 					columns: [
 						{
 							id: "name",
-							header: "Name",
+							header: _("Name"),
 							fillspace: true,
 							sort: "string"
 						},
 						{
 							id: "time",
-							header: "Date",
+							header: _("Date"),
 							template: () => {
 								const format = webix.i18n.longDateFormatStr;
 								return format(new Date());
@@ -104,7 +106,7 @@ export default class ActivitiesAndFiles extends JetView {
 							fillspace: true,
 							sort: "date"
 						},
-						{id: "size", header: "Size", sort: this.sortForSize},
+						{id: "size", header: _("Size"), sort: this.sortForSize},
 						{
 							id: "Delete",
 							header: "",
@@ -123,7 +125,7 @@ export default class ActivitiesAndFiles extends JetView {
 							view: "uploader",
 							width: 200,
 							localId: "upload",
-							value: "Upload file",
+							value: _("Upload file"),
 							name: "files",
 							autosend: false
 						}
@@ -139,8 +141,8 @@ export default class ActivitiesAndFiles extends JetView {
 					localId: "tab",
 					value: "Activities",
 					options: [
-						{value: "Activities"},
-						{value: "Files"}
+						{value: _("Activities"), id: "Activities"},
+						{value: _("Files"), id: "Files"}
 					]
 				},
 				{
@@ -154,6 +156,7 @@ export default class ActivitiesAndFiles extends JetView {
 	}
 
 	init() {
+		this._ = this.app.getService("locale")._;
 		this.$$("activitiesTable").sync(dataActivities);
 		this.$$("filesTable").sync(contactFiles);
 		this.window = this.ui(formActivity);
@@ -194,13 +197,13 @@ export default class ActivitiesAndFiles extends JetView {
 	}
 
 	deleteFile(id) {
-		this.webix.confirm("Are you sure?").then(() => {
+		this.webix.confirm(this._("Are you sure?")).then(() => {
 			contactFiles.remove(id);
 		});
 	}
 
 	deleteActivity(id) {
-		webix.confirm("Are you sure?").then(() => {
+		webix.confirm(this._("Are you sure?")).then(() => {
 			dataActivities.remove(id.row);
 		});
 	}

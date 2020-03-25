@@ -5,6 +5,7 @@ import {ItemDataContact} from "../data/itemData";
 
 export default class Contacts extends JetView {
 	config() {
+		const _ = this.app.getService("locale")._;
 		const contactList = {
 			view: "list",
 			localId: "contactList",
@@ -23,18 +24,28 @@ export default class Contacts extends JetView {
 				height: "auto"
 			}
 		};
+
 		const button = {
 			view: "button",
-			label: "Add contact",
+			label: _("Add contact"),
 			type: "icon",
 			icon: "wxi-plus",
 			click: () => this.openForm()
 		};
 
+		const filter = {
+			view: "text",
+			localId: "filter",
+			placeholder: _("Type something"),
+			on: {
+				onTimedKeyPress: () => this.filter()
+			}
+		};
+
 		return {
 			cols: [
 				{
-					rows: [contactList, button]
+					rows: [filter, contactList, button]
 				},
 				{$subview: true}
 			]
@@ -42,6 +53,7 @@ export default class Contacts extends JetView {
 	}
 
 	init() {
+		this._ = this.app.getService("locale")._;
 		this.listComponents = this.$$("contactList");
 		this.listComponents.sync(dataContacts);
 		this.listComponents.attachEvent("onAfterSelect", (id) => {
@@ -60,7 +72,7 @@ export default class Contacts extends JetView {
 				this.listComponents.select(idFirstContact);
 			}
 			else {
-				webix.message("Please check data");
+				webix.message(this._("Please check data"));
 			}
 		});
 	}
@@ -70,11 +82,24 @@ export default class Contacts extends JetView {
 		if (idContact && dataContacts.getItem(idContact)) {
 			this.listComponents.select(idContact);
 		}
+		this.filter();
 	}
 
 	openForm() {
 		this.listComponents.unselectAll();
 		ItemDataContact.setId(null);
 		this.show("/top/contacts/contacts.formContact");
+	}
+
+	filter() {
+		const filterValue = this.$$("filter").getValue().toLowerCase();
+		this.listComponents.filter((contact) => {
+			if (contact.value.toLowerCase().indexOf(filterValue) !== -1 ||
+				contact.Company.toLowerCase().indexOf(filterValue) !== -1 ||
+				contact.Email.toLowerCase().indexOf(filterValue) !== -1 ||
+				contact.Skype.toLowerCase().indexOf(filterValue) !== -1) {
+				return contact;
+			} return false;
+		});
 	}
 }

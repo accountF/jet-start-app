@@ -6,11 +6,12 @@ import avatar from "../../data/avatar.png";
 
 export default class FormContact extends JetView {
 	config() {
+		const _ = this.app.getService("locale")._;
 		return {
 			rows: [
 				{
 					view: "template",
-					template: "#nameForm# contact",
+					template: `#nameForm# ${_("contact")}`,
 					localId: "header",
 					type: "header"
 				},
@@ -29,30 +30,30 @@ export default class FormContact extends JetView {
 											rows: [
 												{
 													view: "text",
-													label: "First name",
+													label: _("First name"),
 													name: "FirstName",
-													invalidMessage: "First Name must be filled in",
+													invalidMessage: _("First Name must be filled in"),
 													required: true,
 													labelWidth: 100
 												},
 												{
 													view: "text",
-													label: "Last name",
+													label: _("Last name"),
 													name: "LastName",
-													invalidMessage: "Last Name must be filled in",
+													invalidMessage: _("Last Name must be filled in"),
 													required: true,
 													labelWidth: 100
 												},
 												{
 													view: "datepicker",
-													label: "Joining date",
+													label: _("Joining date"),
 													name: "StartDate",
 													format: webix.i18n.longDateFormatStr,
 													labelWidth: 100
 												},
 												{
 													view: "richselect",
-													label: "Status",
+													label: _("Status"),
 													name: "StatusID",
 													options: {
 														view: "suggest",
@@ -62,25 +63,25 @@ export default class FormContact extends JetView {
 															template: "#value#"
 														}
 													},
-													invalidMessage: "Status must be filled in",
+													invalidMessage: _("Status must be filled in"),
 													required: true,
 													labelWidth: 100
 												},
-												{view: "text", label: "Job", name: "Job", invalidMessage: "Job must be filled in", required: true, labelWidth: 100},
-												{view: "text", label: "Company", name: "Company", invalidMessage: "Company must be filled in", required: true, labelWidth: 100},
-												{view: "text", label: "Website", name: "Website", labelWidth: 100},
-												{view: "text", label: "Address", name: "Address", labelWidth: 100}
+												{view: "text", label: _("Job"), name: "Job", invalidMessage: _("Job must be filled in"), required: true, labelWidth: 100},
+												{view: "text", label: _("Company"), name: "Company", invalidMessage: _("Company must be filled in"), required: true, labelWidth: 100},
+												{view: "text", label: _("Website"), name: "Website", labelWidth: 100},
+												{view: "text", label: _("Address"), name: "Address", labelWidth: 100}
 											]
 										},
 										{
 											paddingX: 10,
 											rows: [
-												{view: "text", label: "Email", name: "Email", labelWidth: 100},
-												{view: "text", label: "Skype", name: "Skype", labelWidth: 100},
-												{view: "text", label: "Phone", name: "Phone", labelWidth: 100},
+												{view: "text", label: _("Email"), name: "Email", labelWidth: 100},
+												{view: "text", label: _("Skype"), name: "Skype", labelWidth: 100},
+												{view: "text", label: _("Phone"), name: "Phone", labelWidth: 100},
 												{
 													view: "datepicker",
-													label: "Birthday",
+													label: _("Birthday"),
 													name: "Birthday",
 													format: webix.i18n.longDateFormatStr,
 													labelWidth: 100
@@ -99,7 +100,7 @@ export default class FormContact extends JetView {
 																{},
 																{
 																	view: "uploader",
-																	value: "Change photo",
+																	value: _("Change photo"),
 																	accept: "image/png, image/gif, image/jpg, image/jpeg",
 																	localId: "imageUploader",
 																	autosend: false,
@@ -107,7 +108,7 @@ export default class FormContact extends JetView {
 																},
 																{
 																	view: "button",
-																	value: "Delete Photo",
+																	value: _("Delete photo"),
 																	click: () => this.deletePhoto()
 																}
 															]
@@ -125,14 +126,14 @@ export default class FormContact extends JetView {
 										{},
 										{
 											view: "button",
-											value: "Cancel",
+											value: _("Cancel"),
 											width: 150,
 											click: () => this.closeForm()
 										},
 										{
 											view: "button",
 											localId: "btnAdd",
-											value: "#nameButton#",
+											value: _("#nameButton#"),
 											width: 150,
 											click: () => this.addNewContactOrUpdate()
 										}
@@ -154,6 +155,7 @@ export default class FormContact extends JetView {
 	}
 
 	init() {
+		this._ = this.app.getService("locale")._;
 		this.formComponent = this.$$("formForContactData");
 		this.image = this.$$("templateImage");
 		const reader = new FileReader();
@@ -163,8 +165,8 @@ export default class FormContact extends JetView {
 		});
 
 		const id = ItemDataContact.getId();
-		const nameForm = id ? "Edit" : "Add";
-		const nameButton = id ? "Save" : "Add";
+		const nameForm = id ? this._("Edit") : this._("Add");
+		const nameButton = id ? this._("Save") : this._("Add");
 		this.$$("header").setValues({nameForm});
 		this.$$("btnAdd").setValue(nameButton);
 		if (id) {
@@ -192,11 +194,11 @@ export default class FormContact extends JetView {
 			dataContacts.waitSave(() => {
 				if (idFromData) {
 					dataContacts.updateItem(dataFromForm.id, dataFromForm);
-					webix.message("Contact was updated");
+					webix.message(this._("Contact was updated"));
 				}
 				else {
 					dataContacts.add(dataFromForm, 0);
-					webix.message("Contact was added");
+					webix.message(this._("Contact was added"));
 				}
 			}).then((res) => {
 				ItemDataContact.setId(res.id);
@@ -204,7 +206,7 @@ export default class FormContact extends JetView {
 			});
 		}
 		else {
-			webix.message("Please check fields");
+			webix.message(this._("Please check fields"));
 		}
 	}
 

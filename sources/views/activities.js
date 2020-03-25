@@ -7,10 +7,11 @@ import {ItemDataActivity} from "../data/itemData";
 
 export default class Activities extends JetView {
 	config() {
+		const _ = this.app.getService("locale")._;
 		const button = {
 			view: "button",
-			width: 150,
-			value: "<span class='webix_icon mdi mdi-plus-box'></span> Add Activity",
+			autowidth: true,
+			value: `<span class='webix_icon mdi mdi-plus-box'></span> ${_("Add Activity")}`,
 			click: () => this.window.showWindow()
 		};
 		const table = {
@@ -21,21 +22,28 @@ export default class Activities extends JetView {
 				{
 					id: "State",
 					template: "{common.checkbox()}",
+					header: _("State"),
 					checkValue: "Close",
 					uncheckValue: "Open"
 				},
 				{
 					id: "TypeID",
-					header: ["Type", {content: "selectFilter"}],
+					header: [_("Type"), {content: "selectFilter"}],
 					options: dataActivityType,
 					fillspace: true,
-					sort: "text"
+					sort: "text",
+					template: (obj) => {
+						const item = dataActivityType.getItem(obj.TypeID);
+						const value = item.Value;
+						const icon = item.Icon;
+						return `<span class="mdi mdi-${icon}"></span> ${value} `;
+					}
 				},
 				{
 					id: "DueDate",
 					fillspace: true,
 					header: [
-						"DueDate",
+						_("DueDate"),
 						{
 							content: "datepickerFilter",
 							compare(cellValue, filterValue) {
@@ -53,13 +61,13 @@ export default class Activities extends JetView {
 				},
 				{
 					id: "Details",
-					header: ["Details", {content: "textFilter"}],
+					header: [_("Details"), {content: "textFilter"}],
 					fillspace: true,
 					sort: "string"
 				},
 				{
 					id: "ContactID",
-					header: ["Contact", {content: "selectFilter"}],
+					header: [_("Contact"), {content: "selectFilter"}],
 					options: dataContacts,
 					fillspace: true,
 					sort: "text"
@@ -73,6 +81,26 @@ export default class Activities extends JetView {
 			}
 		};
 
+		const tabbar = {
+			view: "tabbar",
+			localId: "filter",
+			value: "All",
+			options: [
+				{value: _("All")},
+				{value: _("Overdue")},
+				{value: _("Completed")},
+				{value: _("Today")},
+				{value: _("Tomorrow")},
+				{value: _("This week")},
+				{value: _("This month")}
+			],
+			on: {
+				onChange: () => {
+					this.$$("activitiesTable").filterByAll();
+				}
+			}
+		};
+
 		const ui = {
 			rows: [
 				{
@@ -82,6 +110,7 @@ export default class Activities extends JetView {
 						button
 					]
 				},
+				tabbar,
 				table
 			]
 		};
@@ -89,15 +118,44 @@ export default class Activities extends JetView {
 	}
 
 	init() {
+		this._ = this.app.getService("locale")._;
 		this.tableComponent = this.$$("activitiesTable");
 		this.window = this.ui(formActivity);
-		this.tableComponent.sync(dataActivities);
-		dataActivities.data.filter();
+		webix.promise.all([
+			dataContacts.waitData,
+			dataActivities.waitData,
+			dataActivityType.waitData
+		]).then(() => {
+
+			this.tableComponent.sync(dataActivities);
+			dataActivities.data.filter();
+		});
+
+		this.tableComponent.registerFilter(
+			this.$$("filter"),
+			{
+				columnId: "State",
+				compare: (state, filter, item) => this.filterActivity(state, filter, item)
+			},
+			{
+				getValue(node) {
+					return node.getValue();
+				},
+				setValue(node, value) {
+					node.setValue(value);
+				}
+			}
+		);
+	}
+
+	urlChange() {
+		this.$$("activitiesTable").filterByAll();
 	}
 
 	deleteActivity(id) {
-		webix.confirm("Are you sure?").then(() => {
+		webix.confirm(this._("Are you sure?")).then(() => {
 			dataActivities.remove(id.row);
+			this.$$("activitiesTable").filterByAll();
 		});
 	}
 
@@ -106,5 +164,38 @@ export default class Activities extends JetView {
 		ItemDataActivity.setItem(item);
 		ItemDataActivity.setId(id.row);
 		this.window.showWindow();
+		this.$$("activitiesTable").filterByAll();
+	}
+
+	filterActivity(state, filter, item) {
+		const currentDate = new Date();
+		const tomorrowDate = webix.Date.add(currentDate, 1, "day", true);
+
+		const dateToStr = webix.i18n.dateFormatStr(item.DueDate);
+
+		const weekStart = webix.Date.weekStart(currentDate);
+		const weekEnd = webix.Date.add(weekStart, 8, "day", true);
+
+		const monthStart = webix.Date.monthStart(currentDate);
+		const monthEnd = webix.Date.add(monthStart, 1, "month", true);
+
+		switch (filter) {
+			case this._("All"):
+				return true;
+			case this._("Overdue"):
+				return state === "Open" && item.DueDate < currentDate;
+			case this._("Completed"):
+				return state === "Close";
+			case this._("Today"):
+				return dateToStr === webix.i18n.dateFormatStr(currentDate);
+			case this._("Tomorrow"):
+				return dateToStr === webix.i18n.dateFormatStr(tomorrowDate);
+			case this._("This week"):
+				return item.DueDate > weekStart && item.DueDate < weekEnd;
+			case this._("This month"):
+				return item.DueDate > monthStart && item.DueDate < monthEnd;
+			default:
+				return true;
+		}
 	}
 }

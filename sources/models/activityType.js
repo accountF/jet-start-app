@@ -4,6 +4,9 @@ export const dataActivityType = new webix.DataCollection({
 	scheme: {
 		$init: (obj) => {
 			obj.value = obj.Value;
+		},
+		$change: (obj) => {
+			obj.value = obj.Value;
 		}
 	}
 });
